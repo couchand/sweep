@@ -29,8 +29,18 @@ var Game = module.exports;
 
 $(function() {
 
-  var g = new Game();
+  newGame();
+  $("#new").on("click", function() { console.log($("#cols").val());newGame(); });
+
+});
+
+function newGame() {
+  var opts = { height: $("#rows").val(), width: $("#cols").val(), mines: $("#mines").val() };
+
+  var g = new Game( opts );
   g.onEnd = function() { update(); };
+
+  $("#game").empty();
 
   var cells = d3.select("#game")
     .append("table")
@@ -59,10 +69,14 @@ $(function() {
   }
 
   update();
-});
+}
     </script>
   </head>
   <body>
-    <div id="game">
+    <div id="game"></div>
+    <input type="text" value="20" id="cols" />
+    <input type="text" value="10" id="rows" />
+    <input type="text" value="7" id="mines" />
+    <button id="new">New Game</button>
   </body>
 </html>
