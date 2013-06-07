@@ -22,36 +22,29 @@ class Cell
   addNeighbor: (n) ->
     @neighbors.push n
 
+less = (x) -> x-1
+same = (x) -> x
+more = (x) -> x+1
+
 class Board
   constructor: (w, h) ->
     @matrix = ((new Cell() for i in [0...w]) for j in [0...h])
-    for col in [0...w]
-      for row in [1...h]
-        @interlink row, col, row-1, col
-    for col in [0...w]
-      for row in [0...(h-1)]
-        @interlink row, col, row+1, col
-    for col in [0...(w-1)]
-      for row in [0...h]
-        @interlink row, col, row, col-1
-    for col in [1...w]
-      for row in [0...h]
-        @interlink row, col, row, col+1
-    for col in [1...w]
-      for row in [1...h]
-        @interlink row, col, row-1, col-1
-    for col in [0...(w-1)]
-      for row in [1...h]
-        @interlink row, col, row-1, col+1
-    for col in [1...w]
-      for row in [0...(h-1)]
-        @interlink row, col, row+1, col-1
-    for col in [0...(w-1)]
-      for row in [0...(h-1)]
-        @interlink row, col, row+1, col+1
+    @link [1...h],     [0...w],     less, same
+    @link [0...(h-1)], [0...w],     more, same
+    @link [0...h],     [1...w],     same, less
+    @link [0...h],     [0...(w-1)], same, more
+    @link [1...h],     [1...w],     less, less
+    @link [1...h],     [0...(w-1)], less, more
+    @link [0...(h-1)], [1...w],     more, less
+    @link [0...(h-1)], [0...(w-1)], more, more
 
     for row in @matrix
       console.log (cell.neighbors.length for cell in row)
+
+  link: (rangeRow, rangeCol, dRow, dCol) ->
+    for col in rangeCol
+     for row in rangeRow
+       @interlink row, col, dRow(row), dCol(col)
 
   interlink: (ly, lx, ry, rx) ->
     @matrix[ly][lx].addNeighbor @matrix[ry][rx]
