@@ -1,11 +1,21 @@
 # sweeper 3000
 
 class State
-  reveal: ->
+  reveal: -> new Revealed()
 
 class Hidden extends State
+  toString: -> "H"
+  toggleFlag: -> new Flagged()
 class Flagged extends State
+  toString: -> "F"
+  toggleFlag: -> new Questioned()
 class Questioned extends State
+  toString: -> "Q"
+  toggleFlag: -> new Hidden()
+class Revealed extends State
+  toString: -> "R"
+  reveal: -> @
+  toggleFlag: -> @
 
 class Contents
 
@@ -21,6 +31,11 @@ class Cell
     @contents = new NoBomb()
   addNeighbor: (n) ->
     @neighbors.push n
+  toString: -> "#{@state.toString()}(#{@neighbors.length})"
+  reveal: ->
+    @state = @state.reveal()
+  toggleFlag: ->
+    @state = @state.toggleFlag()
 
 less = (x) -> x-1
 same = (x) -> x
@@ -38,8 +53,10 @@ class Board
     @link [0...(h-1)], [0...w],     more, same
     @link [0...(h-1)], [0...(w-1)], more, more
 
+    @matrix[1][1].toggleFlag()
+
     for row in @matrix
-      console.log (cell.neighbors.length for cell in row)
+      console.log (cell.toString() for cell in row).join ","
 
   link: (rangeRow, rangeCol, dRow, dCol) ->
     for col in rangeCol
