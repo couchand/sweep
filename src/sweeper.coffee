@@ -81,8 +81,6 @@ class Board
     @link [0...(h-1)], [0...w],     more, same
     @link [0...(h-1)], [0...(w-1)], more, more
 
-    @matrix[1][1].toggleFlag()
-
   link: (rangeRow, rangeCol, dRow, dCol) ->
     for col in rangeCol
      for row in rangeRow
