@@ -29,13 +29,13 @@ more = (x) -> x+1
 class Board
   constructor: (w, h) ->
     @matrix = ((new Cell() for i in [0...w]) for j in [0...h])
+    @link [1...h],     [1...w],     less, less
     @link [1...h],     [0...w],     less, same
-    @link [0...(h-1)], [0...w],     more, same
+    @link [1...h],     [0...(w-1)], less, more
     @link [0...h],     [1...w],     same, less
     @link [0...h],     [0...(w-1)], same, more
-    @link [1...h],     [1...w],     less, less
-    @link [1...h],     [0...(w-1)], less, more
     @link [0...(h-1)], [1...w],     more, less
+    @link [0...(h-1)], [0...w],     more, same
     @link [0...(h-1)], [0...(w-1)], more, more
 
     for row in @matrix
