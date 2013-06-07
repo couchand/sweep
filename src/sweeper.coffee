@@ -7,7 +7,7 @@ class State
     new Revealed(what)
 
 class Hidden extends State
-  toString: -> "H"
+  toString: -> ""
   toggleFlag: -> new Flagged()
   cls: -> "hidden"
 class Flagged extends State
@@ -23,7 +23,7 @@ class Questioned extends State
 class Revealed extends State
   constructor: (@what) ->
   revealed: -> yes
-  cls: -> "revealed #{@what.cls}"
+  cls: -> "revealed #{@what.cls()}"
   toString: -> @what.toString()
   reveal: -> @
   toggleFlag: -> @
@@ -36,17 +36,20 @@ class NoBomb extends Contents
   toString: ->
     m = @parent.neighborMines()
     if m is 0 then " " else "#{m}"
-  cls: -> "nobomb"
+  cls: -> "nobomb #{@parent.neighborMines()}mines"
   hasBomb: -> no
 class Bomb extends Contents
+  constructor: (@endGame) ->
   toString: -> "B"
   cls: -> "bomb"
   hasBomb: -> yes
   reveal: ->
+    end = @endGame
+    setTimeout end, 0
     console.error "game over"
 
 class Cell
-  constructor: ->
+  constructor: () ->
     @neighbors = []
     @state = new Hidden()
     @contents = new NoBomb @
@@ -62,6 +65,8 @@ class Cell
     return if @state.revealed()
     @state = @state.reveal @contents
     neighbor.reveal() for neighbor in @neighbors if @neighborMines() is 0
+  expose: ->
+    @state = new Revealed @contents
   toggleFlag: ->
     @state = @state.toggleFlag()
 
@@ -104,13 +109,20 @@ class Game
     opts.height ?= 10
     opts.mines ?= 7
     @board = new Board opts.width, opts.height
+    t = @
     for mine in [0...opts.mines]
       pos = randCell @board
-      @board.matrix[pos.row][pos.col].contents = new Bomb()
+      @board.matrix[pos.row][pos.col].contents = new Bomb -> t.showAll()
 
   toString: ->
     for row in @board.matrix
       console.log (cell.toString() for cell in row).join " "
+
+  showAll: ->
+    for row in @board.matrix
+      for cell in row
+        cell.expose()
+    @onEnd and @onEnd()
 
 new Game()
 

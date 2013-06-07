@@ -6,19 +6,22 @@
     <script src="sweeper.js"></script>
     <style>
 tr {
-  height: 12px;
+  height: 32px;
 }
 td {
-  width: 12px;
+  width: 32px;
 }
 .hidden {
   background-color: gray;
 }
 .flagged {
-  background-color: red;
+  background-color: orange;
 }
 .questioned {
   background-color: yellow;
+}
+.bomb {
+  background-color: red;
 }
     </style>
     <script>
@@ -27,6 +30,7 @@ var Game = module.exports;
 $(function() {
 
   var g = new Game();
+  g.onEnd = function() { update(); };
 
   var cells = d3.select("#game")
     .append("table")
@@ -51,7 +55,7 @@ $(function() {
 
   function update() {
     cells.text(function(d) { return d.toString(); })
-      .attr("class", function(d) { console.log(d);return d.cls(); });
+      .attr("class", function(d) { return d.cls(); });
   }
 
   update();
