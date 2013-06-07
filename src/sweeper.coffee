@@ -33,7 +33,9 @@ class Cell
     @contents = new NoBomb()
   addNeighbor: (n) ->
     @neighbors.push n
-  toString: -> "#{@state.toString()}[#{@contents.toString()}](#{@neighbors.length})"
+  neighborMines: ->
+    (n for n in @neighbors when n.hasBomb()).length
+  toString: -> "#{@state.toString()}#{@neighborMines()}"
   hasBomb: ->
     @contents.hasBomb()
   reveal: ->
@@ -87,6 +89,6 @@ class Game
       @board.matrix[pos.row][pos.col].contents = new Bomb()
 
     for row in @board.matrix
-      console.log (cell.toString() for cell in row).join ","
+      console.log (cell.toString() for cell in row).join " "
 
 new Game()
