@@ -20,9 +20,11 @@ class Revealed extends State
 class Contents
 
 class NoBomb extends Contents
-  hasBomb: -> yes
-class Bomb extends Contents
+  toString: -> "N"
   hasBomb: -> no
+class Bomb extends Contents
+  toString: -> "B"
+  hasBomb: -> yes
 
 class Cell
   constructor: ->
@@ -31,7 +33,9 @@ class Cell
     @contents = new NoBomb()
   addNeighbor: (n) ->
     @neighbors.push n
-  toString: -> "#{@state.toString()}(#{@neighbors.length})"
+  toString: -> "#{@state.toString()}[#{@contents.toString()}](#{@neighbors.length})"
+  hasBomb: ->
+    @contents.hasBomb()
   reveal: ->
     @state = @state.reveal()
   toggleFlag: ->
@@ -55,9 +59,6 @@ class Board
 
     @matrix[1][1].toggleFlag()
 
-    for row in @matrix
-      console.log (cell.toString() for cell in row).join ","
-
   link: (rangeRow, rangeCol, dRow, dCol) ->
     for col in rangeCol
      for row in rangeRow
@@ -66,4 +67,26 @@ class Board
   interlink: (ly, lx, ry, rx) ->
     @matrix[ly][lx].addNeighbor @matrix[ry][rx]
 
-new Board 20, 10
+rand = (n) -> Math.floor n*Math.random()
+randCell = (b) ->
+  pos = {
+    row: rand(b.matrix.length)
+    col: rand(b.matrix[0].length)
+  }
+  if b.matrix[pos.row][pos.col].hasBomb() then randCell(b) else pos
+
+class Game
+  constructor: (opts) ->
+    opts ?= {}
+    opts.width ?= 20
+    opts.height ?= 10
+    opts.mines ?= 7
+    @board = new Board opts.width, opts.height
+    for mine in [0...opts.mines]
+      pos = randCell @board
+      @board.matrix[pos.row][pos.col].contents = new Bomb()
+
+    for row in @board.matrix
+      console.log (cell.toString() for cell in row).join ","
+
+new Game()
