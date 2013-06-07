@@ -2,10 +2,26 @@
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>var module = {}</script>
+    <script src="sweeper.js"></script>
     <script>
+var Game = module.exports;
+
 $(function() {
 
-  $("#game").text("foobar");
+  var g = new Game();
+
+  d3.select("#game")
+    .append("table")
+    .selectAll("tr")
+    .data(g.board.matrix)
+  .enter()
+    .append("tr")
+    .selectAll("td")
+    .data(function(d) { return d; })
+  .enter()
+    .append("td")
+    .text(function(d) { return d.toString(); });
 
 });
     </script>
