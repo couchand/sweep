@@ -1,7 +1,9 @@
 # sweeper 3000
 
 class State
-  reveal: -> new Revealed()
+  reveal: (what) ->
+    what.reveal()
+    new Revealed()
 
 class Hidden extends State
   toString: -> "H"
@@ -13,11 +15,12 @@ class Questioned extends State
   toString: -> "Q"
   toggleFlag: -> new Hidden()
 class Revealed extends State
-  toString: -> "R"
-  reveal: -> @
+  toString: -> @what.toString()
+  reveal: (@what) -> @
   toggleFlag: -> @
 
 class Contents
+  reveal: ->
 
 class NoBomb extends Contents
   toString: -> "N"
@@ -25,6 +28,7 @@ class NoBomb extends Contents
 class Bomb extends Contents
   toString: -> "B"
   hasBomb: -> yes
+  reveal: ->
 
 class Cell
   constructor: ->
@@ -39,7 +43,7 @@ class Cell
   hasBomb: ->
     @contents.hasBomb()
   reveal: ->
-    @state = @state.reveal()
+    @state = @state.reveal @contents
   toggleFlag: ->
     @state = @state.toggleFlag()
 
@@ -88,7 +92,10 @@ class Game
       pos = randCell @board
       @board.matrix[pos.row][pos.col].contents = new Bomb()
 
+  toString: ->
     for row in @board.matrix
       console.log (cell.toString() for cell in row).join " "
 
 new Game()
+
+module.exports = Game
