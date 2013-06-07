@@ -207,6 +207,10 @@
       this.contents = new NoBomb(this);
     }
 
+    Cell.prototype.cls = function() {
+      return this.state.cls();
+    };
+
     Cell.prototype.addNeighbor = function(n) {
       return this.neighbors.push(n);
     };

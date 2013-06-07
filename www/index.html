@@ -11,6 +11,15 @@ tr {
 td {
   width: 12px;
 }
+.hidden {
+  background-color: gray;
+}
+.flagged {
+  background-color: red;
+}
+.questioned {
+  background-color: yellow;
+}
     </style>
     <script>
 var Game = module.exports;
@@ -31,13 +40,18 @@ $(function() {
     .append("td");
 
   cells.on("click", function(d) {
-      d.reveal();
+      d3.event.preventDefault();
+      if ( d3.event.shiftKey || d3.event.altKey || d3.event.ctrlKey ) {
+        d.toggleFlag();
+      } else {
+        d.reveal();
+      }
       update();
     });
 
   function update() {
     cells.text(function(d) { return d.toString(); })
-      .classed(function(d) { return d.cls(); });
+      .attr("class", function(d) { console.log(d);return d.cls(); });
   }
 
   update();

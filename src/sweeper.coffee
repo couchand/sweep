@@ -50,6 +50,7 @@ class Cell
     @neighbors = []
     @state = new Hidden()
     @contents = new NoBomb @
+  cls: -> @state.cls()
   addNeighbor: (n) ->
     @neighbors.push n
   neighborMines: ->
