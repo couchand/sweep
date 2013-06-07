@@ -4,6 +4,14 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>var module = {}</script>
     <script src="sweeper.js"></script>
+    <style>
+tr {
+  height: 12px;
+}
+td {
+  width: 12px;
+}
+    </style>
     <script>
 var Game = module.exports;
 
@@ -29,6 +37,7 @@ $(function() {
 
   function update() {
     cells.text(function(d) { return d.toString(); })
+      .classed(function(d) { return d.cls(); });
   }
 
   update();

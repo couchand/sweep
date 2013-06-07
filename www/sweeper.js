@@ -36,6 +36,10 @@
       return new Flagged();
     };
 
+    Hidden.prototype.cls = function() {
+      return "hidden";
+    };
+
     return Hidden;
 
   })(State);
@@ -54,6 +58,14 @@
 
     Flagged.prototype.toggleFlag = function() {
       return new Questioned();
+    };
+
+    Flagged.prototype.cls = function() {
+      return "flagged";
+    };
+
+    Flagged.prototype.reveal = function() {
+      return this;
     };
 
     return Flagged;
@@ -76,6 +88,14 @@
       return new Hidden();
     };
 
+    Questioned.prototype.cls = function() {
+      return "questioned";
+    };
+
+    Questioned.prototype.reveal = function() {
+      return this;
+    };
+
     return Questioned;
 
   })(State);
@@ -89,6 +109,10 @@
 
     Revealed.prototype.revealed = function() {
       return true;
+    };
+
+    Revealed.prototype.cls = function() {
+      return "revealed " + this.what.cls;
     };
 
     Revealed.prototype.toString = function() {
@@ -136,6 +160,10 @@
       }
     };
 
+    NoBomb.prototype.cls = function() {
+      return "nobomb";
+    };
+
     NoBomb.prototype.hasBomb = function() {
       return false;
     };
@@ -154,6 +182,10 @@
 
     Bomb.prototype.toString = function() {
       return "B";
+    };
+
+    Bomb.prototype.cls = function() {
+      return "bomb";
     };
 
     Bomb.prototype.hasBomb = function() {

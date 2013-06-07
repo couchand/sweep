@@ -9,15 +9,21 @@ class State
 class Hidden extends State
   toString: -> "H"
   toggleFlag: -> new Flagged()
+  cls: -> "hidden"
 class Flagged extends State
   toString: -> "F"
   toggleFlag: -> new Questioned()
+  cls: -> "flagged"
+  reveal: -> @
 class Questioned extends State
   toString: -> "Q"
   toggleFlag: -> new Hidden()
+  cls: -> "questioned"
+  reveal: -> @
 class Revealed extends State
   constructor: (@what) ->
   revealed: -> yes
+  cls: -> "revealed #{@what.cls}"
   toString: -> @what.toString()
   reveal: -> @
   toggleFlag: -> @
@@ -30,9 +36,11 @@ class NoBomb extends Contents
   toString: ->
     m = @parent.neighborMines()
     if m is 0 then " " else "#{m}"
+  cls: -> "nobomb"
   hasBomb: -> no
 class Bomb extends Contents
   toString: -> "B"
+  cls: -> "bomb"
   hasBomb: -> yes
   reveal: ->
     console.error "game over"
