@@ -11,7 +11,7 @@ $(function() {
 
   var g = new Game();
 
-  d3.select("#game")
+  var cells = d3.select("#game")
     .append("table")
     .selectAll("tr")
     .data(g.board.matrix)
@@ -20,9 +20,18 @@ $(function() {
     .selectAll("td")
     .data(function(d) { return d; })
   .enter()
-    .append("td")
-    .text(function(d) { return d.toString(); });
+    .append("td");
 
+  cells.on("click", function(d) {
+      d.reveal();
+      update();
+    });
+
+  function update() {
+    cells.text(function(d) { return d.toString(); })
+  }
+
+  update();
 });
     </script>
   </head>

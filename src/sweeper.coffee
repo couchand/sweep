@@ -1,9 +1,10 @@
 # sweeper 3000
 
 class State
+  revealed: -> no
   reveal: (what) ->
     what.reveal()
-    new Revealed()
+    new Revealed(what)
 
 class Hidden extends State
   toString: -> "H"
@@ -15,35 +16,43 @@ class Questioned extends State
   toString: -> "Q"
   toggleFlag: -> new Hidden()
 class Revealed extends State
+  constructor: (@what) ->
+  revealed: -> yes
   toString: -> @what.toString()
-  reveal: (@what) -> @
+  reveal: -> @
   toggleFlag: -> @
 
 class Contents
+  constructor: (@parent) ->
   reveal: ->
 
 class NoBomb extends Contents
-  toString: -> "N"
+  toString: ->
+    m = @parent.neighborMines()
+    if m is 0 then " " else "#{m}"
   hasBomb: -> no
 class Bomb extends Contents
   toString: -> "B"
   hasBomb: -> yes
   reveal: ->
+    console.error "game over"
 
 class Cell
   constructor: ->
     @neighbors = []
     @state = new Hidden()
-    @contents = new NoBomb()
+    @contents = new NoBomb @
   addNeighbor: (n) ->
     @neighbors.push n
   neighborMines: ->
     (n for n in @neighbors when n.hasBomb()).length
-  toString: -> "#{@state.toString()}#{@neighborMines()}"
+  toString: -> "#{@state.toString()}"
   hasBomb: ->
     @contents.hasBomb()
   reveal: ->
+    return if @state.revealed()
     @state = @state.reveal @contents
+    neighbor.reveal() for neighbor in @neighbors if @neighborMines() is 0
   toggleFlag: ->
     @state = @state.toggleFlag()
 
